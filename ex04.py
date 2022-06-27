@@ -1,3 +1,6 @@
+import itertools
+
+
 def list_res(word):
     result = []
     for c in word:
@@ -5,46 +8,36 @@ def list_res(word):
     return result
 
 
+def check_test(words, word):
+    flag = True
+    for i in range(len(words)):
+        if (words[i] == '-' or words[i] == word[i]) and i < len(words):
+            i += 1
+        else:
+            flag = False
+    return flag
+
+
 def bananas(word):
     s = list(word)
     result = set()
     shab = list("banana")
-    i = 0
     j = 0
-    print(s)
     for i in range(len(s)):
-        if s[i] == shab[j]:
-            # print(s[i])
-            # print(s[i], shab[j])
+        if j < len(shab) and s[i] == shab[j]:
             i += 1
             while i < len(s) and j < len(shab) and s[i] == shab[j]:
                 s[i] = '-'
                 i += 1
             j += 1
-    return s
-
-
-def test():
-    print(bananas("bbbananna"))
-
-
-if __name__ == '__main__':
-    test()
-
-#
-# assert bananas("banann") == set()
-# assert bananas("banana") == {"banana"}
-# assert bananas("bbananana") == {"b-an--ana",
-#                                 "-banana--",
-#                                 "-b--anana",
-#                                 "b-a--nana",
-#                                 "-banan--a",
-#                                 "b-ana--na",
-#                                 "b---anana",
-#                                 "-bana--na",
-#                                 "-ba--nana",
-#                                 "b-anan--a",
-#                                 "-ban--ana",
-#                                 "b-anana--"}
-# assert bananas("bananaaa") == {"banan-a-", "banana--", "banan--a"}
-# assert bananas("bananana") == {"ban--ana", "ba--nana", "bana--na", "b--anana", "banana--", "banan--a"}
+        elif i < len(s):
+            s[i] = '-'
+    for i in itertools.permutations(s):
+        tmp = "".join("".join(i).split("-"))
+        if tmp == "banana":
+            s.append("".join(i))
+    for res in s:
+        tmp = "".join("".join(res).split("-"))
+        if check_test(res, word) and tmp == "banana":
+            result.add(res)
+    return result
